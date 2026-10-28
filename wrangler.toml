@@ -1,0 +1,49 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "zarif-portfolio"
+main = "worker/index.js"
+compatibility_date = "2025-06-01"
+
+# ─────────────────────────────────────────────────────────────
+#  স্ট্যাটিক ফাইল (public/ ফোল্ডার)
+# ─────────────────────────────────────────────────────────────
+[assets]
+directory = "./public"
+binding = "ASSETS"
+# রাউটিং Worker নিজে করে (/, /admin, /api), তাই অটো-রিডাইরেক্ট বন্ধ
+html_handling = "none"
+not_found_handling = "none"
+# সব রিকোয়েস্ট প্রথমে Worker-এ আসবে, যাতে HTML-এ ডেটাবেসের তথ্য
+# inject করা যায় এবং /admin ও /api কাজ করে।
+run_worker_first = true
+
+[observability]
+enabled = true
+
+# ─────────────────────────────────────────────────────────────
+#  ডেটাবেস — এখন Supabase কনফিগার করা আছে (সিক্রেট দিয়ে)
+#
+#  Cloudflare-এ একবার এই তিনটি সিক্রেট সেট করুন:
+#    npx wrangler secret put SUPABASE_URL
+#        → https://jcrfwkanqxuaisnjgdmo.supabase.co
+#    npx wrangler secret put SUPABASE_SECRET_KEY
+#        → sb_secret_...   (Supabase → Settings → API keys → Secret keys)
+#    npx wrangler secret put ADMIN_PASSWORD
+#        → আপনার অ্যাডমিন পাসওয়ার্ড
+#
+#  (ঐচ্ছিক) npx wrangler secret put SESSION_SECRET → লম্বা র‍্যান্ডম স্ট্রিং
+#
+#  ▪ secret key না দিয়ে শুধু publishable key দিলেও সাইট চলবে, কিন্তু তখন
+#    ডেটাবেস লেখার অনুমতি ডেটাবেস লেভেলে খোলা থাকে — নিরাপত্তার জন্য
+#    secret key ব্যবহার করাই সঠিক।
+#  ▪ ডেটাবেস অটো-ডিটেক্ট হয়: Supabase → D1 (binding DB) → PostgreSQL
+# ─────────────────────────────────────────────────────────────
+
+# ── অপশন: Cloudflare D1 (Supabase বাদ দিয়ে এটি চাইলে আনকমেন্ট করুন) ──
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "zarif-portfolio"
+# database_id = "এখানে-আপনার-database-id-বসবে"
+
+[vars]
+# গোপন নয় এমন কনফিগ এখানে রাখুন (পাসওয়ার্ড/কী কখনো এখানে নয়)
+SITE_TIMEZONE = "Asia/Dhaka"

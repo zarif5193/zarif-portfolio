@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="admin">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin — Zarif Hasan Portfolio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231F3A29'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='30' fill='%239DC08B' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body>
+
+  <!-- ─────────────── LOGIN ─────────────── -->
+  <section class="login" id="loginView">
+    <div class="login__card">
+      <div class="login__mark">Z</div>
+      <h1>অ্যাডমিন প্যানেল</h1>
+      <p class="muted">সম্পূর্ণ সাইট ম্যানেজ করতে পাসওয়ার্ড দিন।</p>
+      <form id="loginForm">
+        <label class="field">
+          <span>পাসওয়ার্ড</span>
+          <input id="password" type="password" autocomplete="current-password" required placeholder="••••••••" />
+        </label>
+        <button class="btn btn--primary" type="submit" id="loginBtn">লগইন করুন</button>
+        <p class="status" id="loginStatus" role="status"></p>
+      </form>
+      <a class="back" href="/">← সাইটে ফিরে যান</a>
+    </div>
+  </section>
+
+  <!-- ─────────────── APP ─────────────── -->
+  <div class="app" id="appView" hidden>
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <span class="dot">Z</span>
+        <div><b>Admin</b><small>Portfolio Manager</small></div>
+      </div>
+
+      <nav class="sidebar__nav" id="sidebarNav">
+        <button data-view="overview">ড্যাশবোর্ড</button>
+        <button data-view="settings">সাইটের লেখা</button>
+        <button data-view="education">শিক্ষা</button>
+        <button data-view="skills">দক্ষতা</button>
+        <button data-view="interests">আগ্রহ</button>
+        <button data-view="socials">সোশ্যাল লিংক</button>
+        <button data-view="phones">ফোন নম্বর</button>
+        <button data-view="messages">ইনবক্স <span class="badge" id="msgBadge" hidden>0</span></button>
+      </nav>
+
+      <div class="sidebar__foot">
+        <a href="/" target="_blank" rel="noopener">সাইট দেখুন ↗</a>
+        <button id="logoutBtn">লগআউট</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="viewTitle">ড্যাশবোর্ড</h1>
+          <p class="muted" id="viewSub">আপনার পোর্টফোলিওর সব কিছু এক জায়গায়</p>
+        </div>
+        <div class="topbar__right">
+          <span class="pill" id="dbPill">DB: —</span>
+          <button class="btn btn--ghost btn--sm" id="reloadBtn">রিফ্রেশ</button>
+        </div>
+      </header>
+
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <!-- ─────────────── MODAL ─────────────── -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__card" role="dialog" aria-modal="true">
+      <header class="modal__head">
+        <h2 id="modalTitle">এডিট</h2>
+        <button class="icon-btn" data-close aria-label="বন্ধ">✕</button>
+      </header>
+      <div class="modal__body" id="modalBody"></div>
+      <footer class="modal__foot">
+        <button class="btn btn--ghost" data-close>বাতিল</button>
+        <button class="btn btn--primary" id="modalSave">সেভ করুন</button>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="/admin/app.js" defer></script>
+</body>
+</html>

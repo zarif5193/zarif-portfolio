@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="sage">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MD. Zarif Hasan | Personal Portfolio</title>
+  <meta name="description" content="MD. Zarif Hasan — শিক্ষার্থী, প্রযুক্তিপ্রেমী ও সৃজনশীল মানুষ।" />
+  <meta name="theme-color" content="#F4F6F0" />
+  <meta property="og:title" content="MD. Zarif Hasan | Personal Portfolio" />
+  <meta property="og:description" content="Dream. Learn. Create. Become." />
+  <meta property="og:image" content="/zarif.jpg" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%239DC08B'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='34' fill='%231F3A29' text-anchor='middle'%3EZ%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Tiro+Bangla:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/assets/site.css" />
+</head>
+<body class="is-locked">
+
+  <!-- ══════════ LOADER ══════════ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__inner">
+      <div class="loader__mark" id="loaderMark"></div>
+      <div class="loader__bar"><i></i></div>
+    </div>
+  </div>
+
+  <!-- ══════════ AMBIENT ══════════ -->
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <!-- ══════════ NAV ══════════ -->
+  <header class="nav" id="nav">
+    <div class="wrap nav__inner">
+      <a class="brand" href="#top">
+        <span class="brand__mark" id="brandMark">Z</span>
+        <span class="brand__text">
+          <b id="brandName">Zarif Hasan</b>
+          <small>Portfolio</small>
+        </span>
+      </a>
+
+      <nav class="nav__links" id="navLinks" aria-label="প্রধান মেনু">
+        <a href="#about">সম্পর্কে</a>
+        <a href="#education">শিক্ষা</a>
+        <a href="#skills">দক্ষতা</a>
+        <a href="#experience">অভিজ্ঞতা</a>
+        <a href="#interests">আগ্রহ</a>
+        <a href="#contact">যোগাযোগ</a>
+      </nav>
+
+      <a class="nav__cta" href="#contact">
+        যোগাযোগ করুন
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      </a>
+      <button class="nav__burger" id="burger" aria-label="মেনু"><i></i></button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ══════════ HERO ══════════ -->
+    <section class="hero" id="hero">
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <div class="hero__kicker" data-reveal><i></i><span id="heroKicker">PERSONAL PORTFOLIO • 2026</span></div>
+
+          <h1 class="hero__name" id="heroName">
+            <span class="line-mask"><span>MD. Zarif</span></span>
+            <span class="line-mask"><span class="accent-word">Hasan</span></span>
+          </h1>
+
+          <p class="hero__tagline" id="heroTagline" data-reveal style="--d:120ms">
+            Dream. Learn. Create. <b>Become.</b>
+          </p>
+
+          <p class="hero__desc" id="heroDesc" data-reveal style="--d:180ms"></p>
+
+          <div class="hero__actions" data-reveal style="--d:240ms">
+            <a class="btn btn--solid" href="#about" data-magnetic>
+              <span id="heroCta1">আমার সম্পর্কে</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn--ghost" href="#contact" data-magnetic>
+              <span id="heroCta2">যোগাযোগ করুন</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </a>
+          </div>
+
+          <div class="hero__meta" data-reveal style="--d:300ms">
+            <span class="chip" id="heroMeta1">২০০৬ • জন্ম যশোরে</span>
+            <span class="chip" id="heroMeta2">HSC শিক্ষার্থী • ২০২৭</span>
+          </div>
+        </div>
+
+        <div class="hero__visual">
+          <div class="portrait" id="portrait" data-reveal="scale" style="--d:200ms">
+            <div class="portrait__ring"></div>
+            <div class="portrait__ring portrait__ring--2"></div>
+            <div class="portrait__frame" id="portraitFrame">
+              <img id="portraitImg" src="/zarif.jpg" alt="MD. Zarif Hasan" width="800" height="1000" />
+            </div>
+            <span class="portrait__tag">Jashore, BD</span>
+            <div class="portrait__badge"><i></i><span><b>Dream.</b>Learn. Create.</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true">SCROLL<span></span></div>
+    </section>
+
+    <!-- ══════════ MARQUEE ══════════ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marqueeTrack"></div>
+    </div>
+
+    <!-- ══════════ ABOUT ══════════ -->
+    <section id="about">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">01 — ABOUT</span>
+          <span class="section-head__line"></span>
+        </div>
+
+        <div class="about__grid">
+          <div>
+            <h2 class="section-title line-mask" data-reveal><span id="aboutHeading">আমার জীবনবৃত্তান্ত</span></h2>
+            <div class="about__body" id="aboutBody" style="margin-top:22px" data-reveal style="--d:100ms"></div>
+            <div class="about__note" id="aboutNote" data-reveal style="--d:180ms"></div>
+          </div>
+
+          <aside class="stats" data-reveal="right">
+            <div class="stat"><small id="stat1Label">জন্মসাল</small><b data-count id="stat1">2006</b></div>
+            <div class="stat"><small id="stat2Label">দক্ষতার ক্ষেত্র</small><b data-count id="stat2">05</b></div>
+            <div class="stat"><small id="stat3Label">HSC লক্ষ্য</small><b data-count id="stat3">2027</b></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ EDUCATION ══════════ -->
+    <section id="education">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">02 — EDUCATION</span>
+          <span class="section-head__line"></span>
+        </div>
+        <h2 class="section-title" data-reveal>শিক্ষাজীবনের পথচলা</h2>
+
+        <div class="timeline" id="timeline">
+          <div class="timeline__fill" id="timelineFill"></div>
+        </div>
+
+        <!-- decorative botanical line-art (desktop only) -->
+        <svg class="edu-deco" viewBox="0 0 320 420" fill="none" aria-hidden="true">
+          <circle cx="160" cy="210" r="150" stroke="currentColor" stroke-opacity=".16" stroke-dasharray="3 7" />
+          <circle cx="160" cy="210" r="112" stroke="currentColor" stroke-opacity=".1" />
+          <path d="M160 330V150" stroke="currentColor" stroke-opacity=".35" stroke-width="1.4" />
+          <path d="M160 250c-38-6-58-30-62-62 34 2 56 24 62 62Z" stroke="currentColor" stroke-opacity=".35" stroke-width="1.4" />
+          <path d="M160 210c38-6 58-30 62-62-34 2-56 24-62 62Z" stroke="currentColor" stroke-opacity=".35" stroke-width="1.4" />
+          <path d="M160 170c-26-8-38-26-40-50 24 4 36 22 40 50Z" stroke="currentColor" stroke-opacity=".28" stroke-width="1.2" />
+          <path d="M160 320c-20 4-34 16-40 34" stroke="currentColor" stroke-opacity=".28" stroke-width="1.2" />
+          <text x="160" y="392" text-anchor="middle" fill="currentColor" fill-opacity=".3" font-family="Fraunces, Georgia, serif" font-size="13" letter-spacing="6">JOURNEY</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ══════════ SKILLS ══════════ -->
+    <section id="skills">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">03 — SKILLS</span>
+          <span class="section-head__line"></span>
+        </div>
+        <h2 class="section-title" data-reveal>যে বিষয়গুলোতে আগ্রহ ও দক্ষতা</h2>
+        <div class="cards" id="skillsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ══════════ EXPERIENCE ══════════ -->
+    <section id="experience">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">04 — EXPERIENCE</span>
+          <span class="section-head__line"></span>
+        </div>
+        <div class="split">
+          <div class="experience__panel" data-reveal="left">
+            <h2 class="section-title" id="experienceHeading" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:18px">
+              অভিজ্ঞতা ও কাজ
+            </h2>
+            <div id="experienceBody"></div>
+          </div>
+          <div data-reveal="right">
+            <blockquote class="quote" id="quote"></blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ INTERESTS ══════════ -->
+    <section id="interests">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">05 — INTERESTS</span>
+          <span class="section-head__line"></span>
+        </div>
+        <div class="split" style="align-items:center">
+          <div>
+            <h2 class="section-title" data-reveal>আগ্রহ ও শখ</h2>
+            <p class="lede" data-reveal style="margin-top:14px">
+              প্রযুক্তি ও ডিজিটাল দুনিয়ার পাশাপাশি ফুটবল, গেমিং, ফটোগ্রাফি, লেখালেখি এবং নতুন কিছু শেখা আমার আগ্রহের
+              জায়গাগুলোর মধ্যে অন্যতম।
+            </p>
+          </div>
+          <div class="interests" id="interestsWrap" data-reveal="right"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ FUTURE ══════════ -->
+    <section id="future">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">06 — FUTURE GOAL</span>
+          <span class="section-head__line"></span>
+        </div>
+        <div class="split">
+          <h2 class="section-title" id="futureHeading" data-reveal>আমার সামনে অনেক দূরের পথ।</h2>
+          <div data-reveal="right">
+            <p class="lede" id="futureBody"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CONTACT ══════════ -->
+    <section id="contact">
+      <div class="wrap">
+        <div class="section-head" data-reveal>
+          <span class="section-head__num">07 — CONTACT</span>
+          <span class="section-head__line"></span>
+        </div>
+        <h2 class="section-title" id="contactHeading" data-reveal>চলুন যোগাযোগ করি</h2>
+        <p class="lede" id="contactIntro" data-reveal style="margin-top:12px"></p>
+
+        <div class="contact__grid" style="margin-top:38px">
+          <!-- phones + socials -->
+          <div class="contact__card" data-reveal="left">
+            <h3 style="font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-family:var(--font-body);font-weight:500">সরাসরি কল</h3>
+            <div id="phonesWrap" style="margin-top:10px"></div>
+
+            <h3 style="font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-family:var(--font-body);font-weight:500;margin-top:28px">সোশ্যাল মিডিয়া</h3>
+            <div class="socials" id="socialsWrap"></div>
+          </div>
+
+          <!-- form -->
+          <div class="contact__card" data-reveal="right">
+            <form class="form" id="contactForm" novalidate>
+              <div class="field">
+                <label for="cf-name">আপনার নাম *</label>
+                <input id="cf-name" name="name" type="text" required placeholder="নাম লিখুন" autocomplete="name" />
+              </div>
+              <div class="field">
+                <label for="cf-email">ইমেইল</label>
+                <input id="cf-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" />
+              </div>
+              <div class="field">
+                <label for="cf-phone">ফোন</label>
+                <input id="cf-phone" name="phone" type="tel" placeholder="+880 1XXX-XXXXXX" autocomplete="tel" />
+              </div>
+              <div class="field">
+                <label for="cf-message">মেসেজ *</label>
+                <textarea id="cf-message" name="message" required placeholder="আপনার কথা লিখুন..."></textarea>
+              </div>
+              <input class="hp" name="honey" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <div class="form__foot">
+                <button class="btn btn--solid" type="submit" id="formBtn" data-magnetic>
+                  <span>মেসেজ পাঠান</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg>
+                </button>
+                <span class="form__status" id="formStatus" role="status"></span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <span>© <span id="year">2026</span> MD. Zarif Hasan — <span id="footerNote">Designed &amp; built with care in Jashore, Bangladesh.</span></span>
+      <a class="to-top" href="#top">উপরে যান ↑</a>
+    </div>
+  </footer>
+
+  <!-- ══════════ THEME SWITCHER ══════════ -->
+  <div class="theme-pill" role="group" aria-label="রঙের থিম">
+    <b>Theme</b>
+    <button data-theme-btn="sage" aria-label="Botanical Sage" aria-pressed="true"></button>
+    <button data-theme-btn="sand" aria-label="Sand &amp; Warm Earth" aria-pressed="false"></button>
+    <button data-theme-btn="forest" aria-label="Forest &amp; Earthy" aria-pressed="false"></button>
+  </div>
+
+  <!--SITE_DATA-->
+  <script src="/assets/site.js" defer></script>
+</body>
+</html>

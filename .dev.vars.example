@@ -1,0 +1,16 @@
+# ── লোকাল ডেভেলপমেন্টের জন্য (.dev.vars নামে কপি করুন, Git-এ কমিট করবেন না) ──
+
+# অ্যাডমিন প্যানেলের পাসওয়ার্ড (/admin)
+ADMIN_PASSWORD=zarif-2026
+
+# সেশন কুকি সাইন করার সিক্রেট (লম্বা র‍্যান্ডম স্ট্রিং)
+SESSION_SECRET=change-this-to-a-long-random-string
+
+# ── অপশন ১: Supabase (সবচেয়ে সহজ) ──
+SUPABASE_URL=https://jcrfwkanqxuaisnjgdmo.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxxxxxxxxxxxxxxxxx
+# লেখার জন্য (রেকমেন্ডেড, RLS বাইপাস করে) — Supabase → Settings → API keys → secret key
+# SUPABASE_SECRET_KEY=sb_secret_xxxxxxxxxxxxxxxxxxxx
+
+# ── অপশন ২: সরাসরি PostgreSQL ──
+# DATABASE_URL=postgresql://postgres:password@db.xxxx.supabase.co:5432/postgres?sslmode=require
