@@ -1,7 +1,7 @@
 # MD. Zarif Hasan — Personal Portfolio + Admin Panel
 
 সব তথ্য ডেটাবেস থেকে আসে, `/admin` থেকে নিজেই সব এডিট/ডিলিট করা যায়।
-ডেটাবেস: **Supabase** (কানেক্টেড) · D1 · PostgreSQL — যেকোনোটা। Cloudflare Workers-এ শুধু `git push` করলেই ডিপ্লয়।
+ডেটাবেস: **Neon PostgreSQL** (কানেক্টেড ✅) · Supabase · D1 — যেকোনোটা। Cloudflare Workers-এ শুধু `git push` করলেই ডিপ্লয়।
 
 ---
 
@@ -26,6 +26,8 @@
 
 ```
 zarif-portfolio/
+├─ .env                     ← ⚠️ আপনার সিক্রেট (Git-এ যায় না)
+├─ .env.example             ← নমুনা — কোন কোন ভেরিয়েবল লাগে
 ├─ wrangler.toml            ← Cloudflare কনফিগ + ডেটাবেস নোট
 ├─ package.json
 ├─ worker/index.js          ← রাউটিং + সব API (/api/*, /admin, /)
@@ -54,26 +56,36 @@ zarif-portfolio/
 
 ---
 
-## 🚀 ডিপ্লয় — Supabase + Cloudflare (এখন এটাই সেট করা আছে)
+## 🚀 ডিপ্লয় — Neon + Cloudflare (এখন এটাই সেট করা আছে)
 
-### ১) Supabase ডেটাবেস প্রস্তুত
-1. [Supabase Dashboard](https://supabase.com/dashboard) → আপনার প্রজেক্ট
-   (`jcrfwkanqxuaisnjgdmo`) → বাঁ দিকের মেনু থেকে **SQL Editor** → **New query**
-2. `schema/schema.supabase.sql` ফাইলটির **পুরো কোড** পেস্ট করে **Run** চাপুন।
-   → আগের সব টেবিল মুছে নতুন করে তৈরি হবে + ডিফল্ট ডেটা বসবে + RLS চালু হবে।
-   (ফাইলটি পুরনো টেবিল DROP করে, তাই আগে ডেটা ব্যাকআপ নিতে চাইলে নিয়ে নিন)
-3. **Settings → API keys** থেকে **Secret key** (`sb_secret_…`) কপি করুন।
-   *(`sb_publishable_…` key দিয়ে শুধু পড়া যায়; লেখা/অ্যাডমিনের জন্য secret key দরকার)*
+### ডেটাবেস প্রস্তুত ✅ (ইতিমধ্যে হয়ে গেছে)
+Neon ডেটাবেসে সব টেবিল তৈরি + ডিফল্ট ডেটা বসানো হয়েছে:
+`settings`, `education`, `skills`, `interests`, `socials`, `phones`, `messages`
 
-### ২) Cloudflare-এ পুশ করার আগে সিক্রেট সেট
+> আবার কখনো খালি ডেটাবেসে লাগলে:
+> ```bash
+> psql "$DATABASE_URL" -f schema/schema.postgres.sql
+> ```
+
+### ১) লোকাল সেটআপ
+`.env` ফাইলে (Git-এ পুশ হয় না) সব মান আছে:
+```env
+DATABASE_URL=postgresql://neondb_owner:...@ep-...neon.tech/neondb?sslmode=require
+ADMIN_PASSWORD=zarif-2026
+SESSION_SECRET=...
+```
+
 ```bash
 npm install
-npx wrangler login
+npm run dev        # http://localhost:8787  ·  /admin
+```
 
-npx wrangler secret put SUPABASE_URL          # https://jcrfwkanqxuaisnjgdmo.supabase.co
-npx wrangler secret put SUPABASE_SECRET_KEY   # sb_secret_...  ← Supabase থেকে
-npx wrangler secret put ADMIN_PASSWORD        # আপনার অ্যাডমিন পাসওয়ার্ড
-npx wrangler secret put SESSION_SECRET        # যেকোনো লম্বা র‍্যান্ডম স্ট্রিং
+### ২) Cloudflare-এ সিক্রেট সেট (একবারই)
+```bash
+npx wrangler login
+npx wrangler secret put DATABASE_URL      # উপরের postgresql://... লাইনটি পেস্ট করুন
+npx wrangler secret put ADMIN_PASSWORD    # আপনার পাসওয়ার্ড
+npx wrangler secret put SESSION_SECRET    # লম্বা র‍্যান্ডম স্ট্রিং
 ```
 
 ### ৩) ডিপ্লয়
@@ -82,32 +94,32 @@ npx wrangler deploy
 ```
 
 **GitHub থেকে অটো-ডিপ্লয়:** Cloudflare Dashboard → *Workers & Pages* → *Create* →
-*Connect to Git* → রিপো সিলেক্ট → Build command **খালি** রাখুন, Deploy command `npx wrangler deploy`।
-সিক্রেটগুলো Dashboard → Settings → *Variables and Secrets*-এ একবার বসিয়ে দিলেই প্রতিবার `git push`-এ ডিপ্লয় হবে।
+*Connect to Git* → `zarif5193/zarif-portfolio` সিলেক্ট → Build command **খালি**,
+Deploy command `npx wrangler deploy`। সিক্রেটগুলো একবার Dashboard → Settings →
+*Variables and Secrets*-এ বসিয়ে দিলে প্রতিবার `git push`-এ ডিপ্লয় হবে।
 
 ---
 
 ### বিকল্প ডেটাবেস (দরকার হলে)
 
 <details>
-<summary><b>Cloudflare D1</b></summary>
+<summary><b>Supabase</b></summary>
 
-`wrangler.toml`-এ `[[d1_databases]]` আনকমেন্ট করে `database_id` বসান, আর
-`SUPABASE_URL` / `SUPABASE_SECRET_KEY` সিক্রেট দুটি রাখবেন না (থাকলে Supabase অগ্রাধিকার পাবে)।
-
+`schema/schema.supabase.sql` একবার SQL Editor-এ রান করুন, তারপর:
 ```bash
-npx wrangler d1 create zarif-portfolio
-npx wrangler d1 execute zarif-portfolio --remote --file=schema/schema.sqlite.sql
+npx wrangler secret put SUPABASE_URL          # https://xxxx.supabase.co
+npx wrangler secret put SUPABASE_SECRET_KEY   # sb_secret_...
 ```
+(Supabase সেট থাকলে সেটাই অগ্রাধিকার পায় — তাই Neon-এ ফিরতে চাইলে এই দুটি সিক্রেট মুছে দিন)
 </details>
 
 <details>
-<summary><b>সরাসরি PostgreSQL (Neon / Railway …)</b></summary>
+<summary><b>Cloudflare D1</b></summary>
 
+`wrangler.toml`-এ `[[d1_databases]]` আনকমেন্ট করে `database_id` বসান।
 ```bash
-npx wrangler secret delete SUPABASE_URL
-npx wrangler secret put DATABASE_URL     # postgresql://user:pass@host/db?sslmode=require
-psql "$DATABASE_URL" -f schema/schema.postgres.sql
+npx wrangler d1 create zarif-portfolio
+npx wrangler d1 execute zarif-portfolio --remote --file=schema/schema.sqlite.sql
 ```
 </details>
 
@@ -188,9 +200,9 @@ npm run build:preview
 ## ✅ ছোট ছোট দরকারি কথা
 
 - Node 22+ দরকার (wrangler-এর জন্য)। `nvm use 22`
-- ফ্রি প্ল্যানেই যথেষ্ট (Supabase: 500MB DB / Workers: ১ লাখ রিকোয়েস্ট/দিন)
+- ফ্রি প্ল্যানেই যথেষ্ট (Neon: 0.5GB DB / Workers: ১ লাখ রিকোয়েস্ট/দিন)
+- সাইটের প্রথম রিকোয়েস্টে ডেটাবেস কানেকশন ~০.৩ সেকেন্ড, এরপর ক্যাশড
 - ডোমেইন যোগ করতে: Cloudflare Dashboard → Worker → Settings → Domains & Routes
-- ব্যাকআপ: Supabase → Database → Backups, অথবা
-  `pg_dump "postgresql://postgres:PASSWORD@db.jcrfwkanqxuaisnjgdmo.supabase.co:5432/postgres" > backup.sql`
+- ব্যাকআপ: `pg_dump "$DATABASE_URL" > backup.sql` (Neon-এ Dashboard → Backups-ও আছে)
 
 Made with 🌿 for **MD. Zarif Hasan** — Jashore, Bangladesh.

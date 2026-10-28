@@ -20,22 +20,19 @@ run_worker_first = true
 enabled = true
 
 # ─────────────────────────────────────────────────────────────
-#  ডেটাবেস — এখন Supabase কনফিগার করা আছে (সিক্রেট দিয়ে)
+#  ডেটাবেস — এখন Neon PostgreSQL কনফিগার করা আছে (DATABASE_URL)
 #
-#  Cloudflare-এ একবার এই তিনটি সিক্রেট সেট করুন:
-#    npx wrangler secret put SUPABASE_URL
-#        → https://jcrfwkanqxuaisnjgdmo.supabase.co
-#    npx wrangler secret put SUPABASE_SECRET_KEY
-#        → sb_secret_...   (Supabase → Settings → API keys → Secret keys)
+#  Cloudflare-এ একবার এই সিক্রেটগুলো সেট করুন:
+#    npx wrangler secret put DATABASE_URL
+#        → postgresql://neondb_owner:...@ep-...neon.tech/neondb?sslmode=require
 #    npx wrangler secret put ADMIN_PASSWORD
 #        → আপনার অ্যাডমিন পাসওয়ার্ড
+#    npx wrangler secret put SESSION_SECRET
+#        → লম্বা র‍্যান্ডম স্ট্রিং
 #
-#  (ঐচ্ছিক) npx wrangler secret put SESSION_SECRET → লম্বা র‍্যান্ডম স্ট্রিং
-#
-#  ▪ secret key না দিয়ে শুধু publishable key দিলেও সাইট চলবে, কিন্তু তখন
-#    ডেটাবেস লেখার অনুমতি ডেটাবেস লেভেলে খোলা থাকে — নিরাপত্তার জন্য
-#    secret key ব্যবহার করাই সঠিক।
+#  ▪ লোকাল মানগুলো .env / .dev.vars ফাইলে আছে (Git-এ যায় না)
 #  ▪ ডেটাবেস অটো-ডিটেক্ট হয়: Supabase → D1 (binding DB) → PostgreSQL
+#  ▪ টেবিল নিজে থেকেই তৈরি হয়ে যায় (schema/schema.postgres.sql-ও আছে)
 # ─────────────────────────────────────────────────────────────
 
 # ── অপশন: Cloudflare D1 (Supabase বাদ দিয়ে এটি চাইলে আনকমেন্ট করুন) ──
