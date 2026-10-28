@@ -42,6 +42,19 @@ async function asset(env, request, pathname) {
   return env.ASSETS.fetch(new Request(url.toString(), request));
 }
 
+/** Which environment variables exist right now — names only, never values. */
+function envPresence(env) {
+  const has = (k) => Boolean(env && env[k] && String(env[k]).trim());
+  return {
+    DATABASE_URL: has('DATABASE_URL') || has('POSTGRES_URL'),
+    ADMIN_PASSWORD: has('ADMIN_PASSWORD') || has('ADMIN_SECRET'),
+    SESSION_SECRET: has('SESSION_SECRET'),
+    SUPABASE_URL: has('SUPABASE_URL') || has('NEXT_PUBLIC_SUPABASE_URL'),
+    SUPABASE_KEY: has('SUPABASE_SECRET_KEY') || has('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'),
+    D1: Boolean(env && env.DB),
+  };
+}
+
 /** Drops empty values so a partial UPDATE never wipes untouched columns. */
 function compact(obj) {
   const out = {};
@@ -149,10 +162,23 @@ async function handleApi(request, env, url) {
 
   try {
     if (path === '/api/health') {
-      if (!hasDB(env)) return json({ ok: false, db: null, error: 'কোনো ডেটাবেস কনফিগার করা নেই' });
-      const r = await open();
-      await r.health();
-      return json({ ok: true, db: r.kind, label: r.label, secure: r.secure });
+      const config = envPresence(env);
+      if (!hasDB(env)) {
+        return json({
+          ok: false,
+          db: null,
+          config,
+          error:
+            'কোনো ডেটাবেস কনফিগার করা নেই — Cloudflare Worker → Settings → Variables and Secrets-এ DATABASE_URL যোগ করুন।',
+        });
+      }
+      try {
+        const r = await open();
+        await r.health();
+        return json({ ok: true, db: r.kind, label: r.label, secure: r.secure, config });
+      } catch (e) {
+        return json({ ok: false, db: 'configured-but-unreachable', config, error: String((e && e.message) || e) }, 200);
+      }
     }
 
     if (path === '/api/site' && method === 'GET') {
@@ -167,7 +193,17 @@ async function handleApi(request, env, url) {
     if (path === '/api/login' && method === 'POST') {
       const { password } = await readJson(request);
       if (!adminPassword(env)) {
-        return json({ error: 'ADMIN_PASSWORD সেট করা হয়নি। Cloudflare Secret-এ এটা যোগ করুন।' }, 500);
+        return json(
+          {
+            error:
+              'এই Worker-এ ADMIN_PASSWORD এখনো সেট হয়নি। Cloudflare Dashboard → Workers & Pages → zarif-portfolio → ' +
+              'Settings → Variables and Secrets → Add → নাম: ADMIN_PASSWORD, মান: আপনার পাসওয়ার্ড → Save and Deploy। ' +
+              'অথবা টার্মিনালে: npx wrangler secret put ADMIN_PASSWORD',
+            code: 'ADMIN_PASSWORD_MISSING',
+            config: envPresence(env),
+          },
+          500
+        );
       }
       if (!password || !safeEqual(password, adminPassword(env))) {
         await new Promise((r) => setTimeout(r, 600));

@@ -12,7 +12,9 @@
     "db:supabase": "echo \"Supabase Dashboard → SQL Editor-এ schema/schema.supabase.sql পেস্ট করে Run করুন\"",
     "db:d1:create": "wrangler d1 create zarif-portfolio",
     "db:d1:migrate": "wrangler d1 execute zarif-portfolio --remote --file=schema/schema.sqlite.sql",
-    "db:pg:migrate": "psql \"$DATABASE_URL\" -f schema/schema.postgres.sql"
+    "db:pg:migrate": "psql \"$DATABASE_URL\" -f schema/schema.postgres.sql",
+    "secrets": "node scripts/setup-secrets.mjs",
+    "secrets:check": "node scripts/setup-secrets.mjs --check"
   },
   "devDependencies": {
     "wrangler": "^4.154.0"

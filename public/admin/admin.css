@@ -73,6 +73,26 @@ button, input, textarea, select { font: inherit; color: inherit; }
 }
 .back:hover { color: var(--accent-deep); }
 
+.setup-check {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fdf6f2;
+  border: 1px solid #f0d8cd;
+  text-align: left;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #7a4a33;
+}
+.setup-check[hidden] { display: none; }
+.setup-check b { color: var(--danger); }
+.setup-check p { margin: 6px 0; }
+.setup-check ul { margin: 6px 0 6px 18px; padding: 0; }
+.setup-check code {
+  background: #fff; border: 1px solid #f0d8cd; border-radius: 6px;
+  padding: 1px 6px; font-size: 0.78rem; color: #7a4a33;
+}
+
 /* ---------- layout ---------- */
 .app {
   display: grid;

@@ -549,22 +549,63 @@
           body: JSON.stringify({ password: $('#password').value }),
         });
         const json = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(json.error || 'লগইন ব্যর্থ হয়েছে');
+        if (!res.ok) {
+          const err = new Error(json.error || 'লগইন ব্যর্থ হয়েছে');
+          err.code = json.code;
+          throw err;
+        }
         status.textContent = 'সফল ✓';
         await start();
       } catch (err) {
         status.textContent = err.message;
         status.classList.add('is-error');
+        if (err.code === 'ADMIN_PASSWORD_MISSING') showSetupCheck();
       } finally {
         btn.disabled = false;
       }
     });
   }
 
+  /** Tells the user exactly what is missing on the server (names only). */
+  async function showSetupCheck() {
+    const box = $('#setupCheck');
+    if (!box) return;
+    try {
+      const res = await fetch('/api/health', { credentials: 'same-origin' });
+      const h = await res.json();
+      const c = h.config || {};
+      const missing = [];
+      if (!c.DATABASE_URL && !c.SUPABASE_URL && !c.D1) missing.push('DATABASE_URL');
+      if (!c.ADMIN_PASSWORD) missing.push('ADMIN_PASSWORD');
+      if (!missing.length) {
+        box.hidden = true;
+        return;
+      }
+      box.hidden = false;
+      box.innerHTML = `
+        <b>⚠️ সার্ভারে সেটিংস নেই</b>
+        <p>এই Worker-এ এখনো ${missing.map((m) => `<code>${m}</code>`).join(' ও ')} যোগ করা হয়নি, তাই লগইন কাজ করবে না।</p>
+        <p><b>Cloudflare Dashboard</b> → Workers &amp; Pages → <b>zarif-portfolio</b> → Settings →
+           Variables and Secrets → <b>Add</b> → Type: <b>Secret</b></p>
+        <ul>
+          <li><code>ADMIN_PASSWORD</code> = আপনার পাসওয়ার্ড</li>
+          <li><code>DATABASE_URL</code> = postgresql://... (Neon URL)</li>
+          <li><code>SESSION_SECRET</code> = যেকোনো লম্বা র‍্যান্ডম স্ট্রিং</li>
+        </ul>
+        <p>তারপর <b>Save and Deploy</b> চাপুন। (অথবা টার্মিনালে <code>npx wrangler secret put ADMIN_PASSWORD</code>)</p>`;
+    } catch {
+      box.hidden = true;
+    }
+  }
+
   async function start() {
     try {
       const session = await api('/api/session');
-      if (!session.loggedIn) return showLogin();
+      if (!session.loggedIn) {
+        showLogin();
+        showSetupCheck();
+        return;
+      }
       await loadData();
       showApp();
       setView(state.view);
