@@ -2,7 +2,8 @@
    MD. Zarif Hasan — Portfolio front-end
    • Renders every section from the JSON injected by the Worker (#site-data)
    • Premium motion: reveal-on-scroll, parallax, magnetic buttons, tilt,
-     counters, kinetic marquee, custom cursor, theme switcher, contact form
+     counters, kinetic marquee, custom cursor, contact form, and a
+     scroll-controlled five-clip 3D video background engine
    ========================================================================= */
 
 (() => {
@@ -164,7 +165,6 @@
       .map(
         (row, i) => `
       <article class="card" data-reveal="scale" style="--d:${i * 70}ms">
-        <span class="card__num">${String(i + 1).padStart(2, '0')}</span>
         <h3 class="card__title">${esc(row.title)}</h3>
         <p class="card__text">${esc(row.description)}</p>
         <span class="card__arrow">আরও জানুন
@@ -224,60 +224,14 @@
 
   /* -------------------------------------------------------------- motion */
 
-  function initTheme() {
-    const saved = localStorage.getItem('zh-theme');
-    if (saved) document.documentElement.dataset.theme = saved;
-    const sync = () => {
-      $$('[data-theme-btn]').forEach((btn) =>
-        btn.setAttribute('aria-pressed', String(btn.dataset.themeBtn === document.documentElement.dataset.theme))
-      );
-      const meta = $('meta[name="theme-color"]');
-      const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
-      if (meta && bg) meta.setAttribute('content', bg);
-    };
-    $$('[data-theme-btn]').forEach((btn) =>
-      btn.addEventListener('click', () => {
-        document.documentElement.dataset.theme = btn.dataset.themeBtn;
-        localStorage.setItem('zh-theme', btn.dataset.themeBtn);
-        sync();
-      })
-    );
-    // rotate through themes with the "T" key (nice easter egg)
-    window.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 't' && !/input|textarea/i.test(document.activeElement.tagName)) {
-        const order = ['sage', 'sand', 'forest'];
-        const cur = document.documentElement.dataset.theme || 'sage';
-        const next = order[(order.indexOf(cur) + 1) % order.length];
-        document.documentElement.dataset.theme = next;
-        localStorage.setItem('zh-theme', next);
-        sync();
-      }
+  /* The old theme switcher and the blocking preloader are retired. The
+     opening 3D clip plays immediately; hero reveals still get their staged
+     entrance so the existing content animation is unchanged. */
+  function revealHero() {
+    document.documentElement.classList.add('is-loaded');
+    $$('.hero [data-reveal], .hero .line-mask').forEach((el, i) => {
+      setTimeout(() => el.classList.add('is-in'), reduceMotion ? 0 : 60 + i * 80);
     });
-    sync();
-  }
-
-  function initLoader() {
-    const loader = $('#loader');
-    const mark = $('#loaderMark');
-    if (mark) {
-      mark.innerHTML = pick('brand', 'Zarif')
-        .split('')
-        .slice(0, 9)
-        .map((ch, i) => `<span style="animation-delay:${i * 55}ms">${ch === ' ' ? '&nbsp;' : esc(ch)}</span>`)
-        .join('');
-    }
-    const done = () => {
-      if (loader) loader.classList.add('is-done');
-      document.body.classList.remove('is-locked');
-      document.documentElement.classList.add('is-loaded');
-      // kick off first-screen reveals
-      $$('.hero [data-reveal], .hero .line-mask').forEach((el, i) => {
-        setTimeout(() => el.classList.add('is-in'), 60 + i * 80);
-      });
-    };
-    if (reduceMotion) return done();
-    window.addEventListener('load', () => setTimeout(done, 700));
-    setTimeout(done, 2600); // safety net
   }
 
   function initReveal() {
@@ -439,7 +393,6 @@
     if (reduceMotion) return;
     const layers = [
       { el: $('#portrait'), speed: 0.06 },
-      { el: $('.aurora span:nth-child(1)'), speed: -0.02 },
     ].filter((l) => l.el);
     let ticking = false;
     window.addEventListener(
@@ -517,6 +470,258 @@
     });
   }
 
+  /* ------------------------------------------------- 3D video backgrounds */
+
+  /**
+   * One fixed stage holds the five supplied clips. IntersectionObserver picks
+   * the section; a passive scroll listener + requestAnimationFrame + a short
+   * idle timer drive `wantPlaying`. applyPlayback() is the single source of
+   * truth, so pause() always preserves currentTime and late play() promises
+   * can never restart a paused frame.
+   */
+  function initVideoBackgrounds() {
+    const stage = $('#videoStage');
+    if (!stage) return;
+
+    const clips = new Map($$('.video-stage__clip').map((v) => [v.dataset.videoId, v]));
+
+    const SCROLL_IDLE_MS = 140;
+    let activeId = 'hero';
+    let wantPlaying = false;
+    let scrolling = false;
+    let hasScrolled = false;
+    let idleTimer = 0;
+    let scrollRaf = 0;
+    let lastScrollAt = -Infinity;
+
+    const activeClip = () => clips.get(activeId);
+    const recentlyScrolled = (windowMs = 320) =>
+      hasScrolled && performance.now() - lastScrollAt < windowMs;
+
+    clips.forEach((v) => {
+      v.muted = true;
+      v.playsInline = true;
+      if (reduceMotion) {
+        v.autoplay = false;
+        v.removeAttribute('autoplay');
+      }
+      /* Native autoplay can start after our first pause; re-assert the
+         desired state whenever a clip emits `play`. */
+      v.addEventListener('play', () => {
+        if (reduceMotion || !wantPlaying || v !== activeClip()) v.pause();
+      });
+    });
+
+    /** Lazy, jitter-free loading: metadata near the viewport, full on demand. */
+    function ensureLoaded(clip, full) {
+      if (!clip) return;
+      if (clip.dataset.loaded === '1') {
+        /* A clip warmed with metadata only needs one reload to buffer fully.
+           Never reload a clip that already holds a paused frame. */
+        if (full && clip.dataset.fullLoaded !== '1') {
+          clip.preload = 'auto';
+          if (clip.currentTime < 0.05) clip.load();
+          clip.dataset.fullLoaded = '1';
+        }
+        return;
+      }
+      if (clip.dataset.src) {
+        clip.src = clip.dataset.src;
+        clip.preload = full ? 'auto' : 'metadata';
+        clip.load();
+        clip.dataset.fullLoaded = full ? '1' : '';
+      } else {
+        clip.preload = full ? 'auto' : clip.preload;
+        clip.dataset.fullLoaded = '1';
+      }
+      clip.dataset.loaded = '1';
+    }
+
+    /** Only the active clip may play; all others stay paused on their frame. */
+    function applyPlayback() {
+      clips.forEach((v, id) => {
+        if (id !== activeId) {
+          if (!v.paused) v.pause();
+          return;
+        }
+        if (reduceMotion || !wantPlaying) {
+          if (!v.paused) v.pause();
+          return;
+        }
+        if (v.paused) {
+          const atEnd =
+            v.ended ||
+            (Number.isFinite(v.duration) && v.duration > 0 && v.currentTime >= v.duration - 0.08);
+          if (atEnd) v.currentTime = 0;
+          try {
+            const p = v.play();
+            if (p && typeof p.then === 'function') p.catch(() => {}).then(applyPlayback);
+          } catch (e) {
+            /* Autoplay can be refused on restricted devices: the poster stays. */
+          }
+        }
+      });
+    }
+
+    function scheduleIdle() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        scrolling = false;
+        stage.dataset.scrolling = 'false';
+        /* VIDEO 01 is an opening animation, not a scroll-controlled section:
+           let it finish / rest on its final frame while the hero is visible. */
+        wantPlaying = !reduceMotion && activeId === 'hero';
+        applyPlayback();
+      }, SCROLL_IDLE_MS);
+    }
+
+    function setActiveVideo(id) {
+      if (!id || !clips.has(id) || id === activeId) return;
+      const prev = activeClip();
+      const next = clips.get(id);
+      activeId = id;
+      if (prev) {
+        prev.classList.remove('is-active');
+        if (!prev.paused) prev.pause();
+      }
+      ensureLoaded(next, true);
+      next.classList.add('is-active');
+      if (reduceMotion) {
+        wantPlaying = false;
+      } else if (scrolling || recentlyScrolled()) {
+        /* A delayed IO switch still belongs to the same scroll gesture. */
+        wantPlaying = true;
+        if (!scrolling) scheduleIdle();
+      } else {
+        /* Returning to the hero without a fresh gesture resumes its opening. */
+        wantPlaying = id === 'hero';
+      }
+      applyPlayback();
+    }
+
+    function markScrolling() {
+      if (reduceMotion) return;
+      hasScrolled = true;
+      lastScrollAt = performance.now();
+      scrolling = true;
+      wantPlaying = true;
+      stage.dataset.scrolling = 'true';
+      applyPlayback();
+      scheduleIdle();
+    }
+
+    /* Passive scroll handling: the cheap play/idle state is updated directly
+       (never lost to a throttled frame), while requestAnimationFrame coalesces
+       the non-critical visual state. Both scroll directions use this path. */
+    const onScroll = () => {
+      if (reduceMotion) return;
+      markScrolling();
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        stage.dataset.scrolling = scrolling ? 'true' : 'false';
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const sections = $$('[data-video]');
+    if ('IntersectionObserver' in window) {
+      const ratios = new Map();
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            ratios.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
+          });
+          let best = null;
+          let bestScore = -1;
+          ratios.forEach((ratio, el) => {
+            if (ratio <= 0) return;
+            const rect = el.getBoundingClientRect();
+            /* Visible pixels, not ratio: a thin fully-visible marquee must not
+               outrank the tall section actually filling the viewport. */
+            const visible = Math.max(0, Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0));
+            const distance = Math.abs(rect.top + rect.height / 2 - innerHeight / 2);
+            const score = visible - distance / innerHeight;
+            if (score > bestScore) {
+              bestScore = score;
+              best = el;
+            }
+          });
+          if (best) setActiveVideo(best.dataset.video);
+        },
+        { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] }
+      );
+      sections.forEach((s) => io.observe(s));
+
+      /* Warm the next clip's metadata only — never download all five at once. */
+      const preloadIo = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            ensureLoaded(clips.get(entry.target.dataset.video), false);
+            preloadIo.unobserve(entry.target);
+          });
+        },
+        { rootMargin: '50% 0px 50% 0px' }
+      );
+      sections.forEach((s) => preloadIo.observe(s));
+    } else {
+      /* Older browsers: geometry fallback, still one active clip at a time. */
+      const update = () => {
+        let best = null;
+        let bestVisible = -1;
+        sections.forEach((s) => {
+          const r = s.getBoundingClientRect();
+          const visible = Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0));
+          if (visible > bestVisible) {
+            bestVisible = visible;
+            best = s;
+          }
+        });
+        if (best) setActiveVideo(best.dataset.video);
+      };
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    }
+
+    /* Rest on the final frame; if the visitor is still scrolling, continue once. */
+    clips.forEach((clip) => {
+      clip.addEventListener('ended', () => {
+        if (clip !== activeClip()) return;
+        if (!reduceMotion && (scrolling || recentlyScrolled())) {
+          clip.currentTime = 0;
+          wantPlaying = true;
+          applyPlayback();
+        } else {
+          wantPlaying = false;
+          applyPlayback();
+        }
+      });
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        scrolling = false;
+        wantPlaying = false;
+        clearTimeout(idleTimer);
+        applyPlayback();
+      } else if (!reduceMotion && activeId === 'hero') {
+        wantPlaying = true;
+        applyPlayback();
+      }
+    });
+
+    /* VIDEO 01: opening animation starts immediately on load. */
+    const hero = clips.get('hero');
+    if (hero) {
+      hero.classList.add('is-active');
+      ensureLoaded(hero, true);
+    }
+    wantPlaying = !reduceMotion;
+    applyPlayback();
+  }
+
   /* ----------------------------------------------------------------- boot */
 
   renderStatic();
@@ -526,15 +731,15 @@
   renderPhones(DATA.phones);
   renderSocials(DATA.socials);
 
-  initTheme();
   initNav();
   initReveal();
-  initLoader();
+  revealHero();
   initCursor();
   initMagnetic();
   initTilt();
   initCounters();
   initParallax();
+  initVideoBackgrounds();
   initForm();
   initSmoothAnchors();
 })();

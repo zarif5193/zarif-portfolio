@@ -35,8 +35,8 @@ const dataBlock = `<script id="site-data" type="application/json">${JSON.stringi
 html = html
   .replace(/<link rel="preconnect"[^>]*>/g, '')
   .replace(/\s*<link\s+href="https:\/\/fonts\.googleapis\.com[\s\S]*?\/>\n/, '\n')
-  .replace('<link rel="stylesheet" href="/assets/site.css" />', () => cssBlock)
-  .replace('<script src="/assets/site.js" defer></script>', () => jsBlock)
+  .replace(/<link rel="stylesheet" href="\/assets\/site\.css[^"]*" \/>/, () => cssBlock)
+  .replace(/<script src="\/assets\/site\.js[^"]*" defer><\/script>/, () => jsBlock)
   .replace('<!--SITE_DATA-->', () => dataBlock);
 
 fs.writeFileSync(path.join(root, 'preview/portfolio-preview.html'), html);

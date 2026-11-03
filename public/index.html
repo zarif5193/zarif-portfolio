@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MD. Zarif Hasan | Personal Portfolio</title>
   <meta name="description" content="MD. Zarif Hasan — শিক্ষার্থী, প্রযুক্তিপ্রেমী ও সৃজনশীল মানুষ।" />
-  <meta name="theme-color" content="#F4F6F0" />
+  <meta name="theme-color" content="#0b1b14" />
   <meta property="og:title" content="MD. Zarif Hasan | Personal Portfolio" />
   <meta property="og:description" content="Dream. Learn. Create. Become." />
   <meta property="og:image" content="/zarif.jpg" />
@@ -17,21 +17,39 @@
     href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=Tiro+Bangla:ital@0;1&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="/assets/site.css" />
+  <link rel="preload" as="image" href="/assets/videos/posters/hero-opening.jpg" />
+  <link rel="stylesheet" href="/assets/site.css?v=20261103" />
 </head>
-<body class="is-locked">
+<body>
 
-  <!-- ══════════ LOADER ══════════ -->
-  <div class="loader" id="loader" aria-hidden="true">
-    <div class="loader__inner">
-      <div class="loader__mark" id="loaderMark"></div>
-      <div class="loader__bar"><i></i></div>
-    </div>
+  <!-- ══════════ CINEMATIC 3D VIDEO BACKGROUNDS ══════════ -->
+  <!-- VIDEO 01 Opening Hero · VIDEO 02 About · VIDEO 03 Skills
+       VIDEO 04 Work/Portfolio · VIDEO 05 Contact.
+       Only the active clip is visible; all others stay paused and lazy. -->
+  <div class="video-stage" id="videoStage" aria-hidden="true">
+    <video class="video-stage__clip is-active" data-video-id="hero"
+           src="/assets/videos/hero-opening.mp4"
+           poster="/assets/videos/posters/hero-opening.jpg"
+           autoplay muted playsinline webkit-playsinline preload="auto" fetchpriority="high"></video>
+    <video class="video-stage__clip" data-video-id="about"
+           data-src="/assets/videos/about-botanical.mp4"
+           poster="/assets/videos/posters/about-botanical.jpg"
+           muted playsinline webkit-playsinline preload="none"></video>
+    <video class="video-stage__clip" data-video-id="skills"
+           data-src="/assets/videos/skills-glass-frames.mp4"
+           poster="/assets/videos/posters/skills-glass-frames.jpg"
+           muted playsinline webkit-playsinline preload="none"></video>
+    <video class="video-stage__clip" data-video-id="portfolio"
+           data-src="/assets/videos/portfolio-gallery.mp4"
+           poster="/assets/videos/posters/portfolio-gallery.jpg"
+           muted playsinline webkit-playsinline preload="none"></video>
+    <video class="video-stage__clip" data-video-id="contact"
+           data-src="/assets/videos/contact-portal.mp4"
+           poster="/assets/videos/posters/contact-portal.jpg"
+           muted playsinline webkit-playsinline preload="none"></video>
+    <div class="video-stage__scrim"></div>
   </div>
 
-  <!-- ══════════ AMBIENT ══════════ -->
-  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
-  <div class="grain" aria-hidden="true"></div>
   <div class="cursor" aria-hidden="true"></div>
   <div class="cursor-dot" aria-hidden="true"></div>
   <div class="progress" id="progress" aria-hidden="true"></div>
@@ -67,7 +85,7 @@
   <main id="top">
 
     <!-- ══════════ HERO ══════════ -->
-    <section class="hero" id="hero">
+    <section class="hero" id="hero" data-video="hero">
       <div class="wrap hero__grid">
         <div class="hero__copy">
           <div class="hero__kicker" data-reveal><i></i><span id="heroKicker">PERSONAL PORTFOLIO • 2026</span></div>
@@ -116,15 +134,14 @@
     </section>
 
     <!-- ══════════ MARQUEE ══════════ -->
-    <div class="marquee" aria-hidden="true">
+    <div class="marquee" aria-hidden="true" data-video="hero">
       <div class="marquee__track" id="marqueeTrack"></div>
     </div>
 
     <!-- ══════════ ABOUT ══════════ -->
-    <section id="about">
+    <section id="about" data-video="about">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">01 — ABOUT</span>
           <span class="section-head__line"></span>
         </div>
 
@@ -145,10 +162,9 @@
     </section>
 
     <!-- ══════════ EDUCATION ══════════ -->
-    <section id="education">
+    <section id="education" data-video="about">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">02 — EDUCATION</span>
           <span class="section-head__line"></span>
         </div>
         <h2 class="section-title" data-reveal>শিক্ষাজীবনের পথচলা</h2>
@@ -172,10 +188,9 @@
     </section>
 
     <!-- ══════════ SKILLS ══════════ -->
-    <section id="skills">
+    <section id="skills" data-video="skills">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">03 — SKILLS</span>
           <span class="section-head__line"></span>
         </div>
         <h2 class="section-title" data-reveal>যে বিষয়গুলোতে আগ্রহ ও দক্ষতা</h2>
@@ -184,10 +199,9 @@
     </section>
 
     <!-- ══════════ EXPERIENCE ══════════ -->
-    <section id="experience">
+    <section id="experience" data-video="portfolio">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">04 — EXPERIENCE</span>
           <span class="section-head__line"></span>
         </div>
         <div class="split">
@@ -205,10 +219,9 @@
     </section>
 
     <!-- ══════════ INTERESTS ══════════ -->
-    <section id="interests">
+    <section id="interests" data-video="portfolio">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">05 — INTERESTS</span>
           <span class="section-head__line"></span>
         </div>
         <div class="split" style="align-items:center">
@@ -225,10 +238,9 @@
     </section>
 
     <!-- ══════════ FUTURE ══════════ -->
-    <section id="future">
+    <section id="future" data-video="portfolio">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">06 — FUTURE GOAL</span>
           <span class="section-head__line"></span>
         </div>
         <div class="split">
@@ -241,10 +253,9 @@
     </section>
 
     <!-- ══════════ CONTACT ══════════ -->
-    <section id="contact">
+    <section id="contact" data-video="contact">
       <div class="wrap">
         <div class="section-head" data-reveal>
-          <span class="section-head__num">07 — CONTACT</span>
           <span class="section-head__line"></span>
         </div>
         <h2 class="section-title" id="contactHeading" data-reveal>চলুন যোগাযোগ করি</h2>
@@ -253,10 +264,10 @@
         <div class="contact__grid" style="margin-top:38px">
           <!-- phones + socials -->
           <div class="contact__card" data-reveal="left">
-            <h3 style="font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-family:var(--font-body);font-weight:500">সরাসরি কল</h3>
+            <h3 style="font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-family:var(--font-body);font-weight:500">সরাসরি কল</h3>
             <div id="phonesWrap" style="margin-top:10px"></div>
 
-            <h3 style="font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);font-family:var(--font-body);font-weight:500;margin-top:28px">সোশ্যাল মিডিয়া</h3>
+            <h3 style="font-size:1rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-family:var(--font-body);font-weight:500;margin-top:28px">সোশ্যাল মিডিয়া</h3>
             <div class="socials" id="socialsWrap"></div>
           </div>
 
@@ -295,7 +306,7 @@
   </main>
 
   <!-- ══════════ FOOTER ══════════ -->
-  <footer class="footer">
+  <footer class="footer" data-video="contact">
     <div class="wrap footer__inner">
       <span>© <span id="year">2026</span> MD. Zarif Hasan — <span id="footerNote">Designed &amp; built with care in Jashore, Bangladesh.</span></span>
       <a class="to-top" href="#top">উপরে যান ↑</a>
@@ -303,14 +314,9 @@
   </footer>
 
   <!-- ══════════ THEME SWITCHER ══════════ -->
-  <div class="theme-pill" role="group" aria-label="রঙের থিম">
-    <b>Theme</b>
-    <button data-theme-btn="sage" aria-label="Botanical Sage" aria-pressed="true"></button>
-    <button data-theme-btn="sand" aria-label="Sand &amp; Warm Earth" aria-pressed="false"></button>
-    <button data-theme-btn="forest" aria-label="Forest &amp; Earthy" aria-pressed="false"></button>
-  </div>
+  <!-- Removed: the visible theme icon/button and its reserved space are gone. -->
 
   <!--SITE_DATA-->
-  <script src="/assets/site.js" defer></script>
+  <script src="/assets/site.js?v=20261103" defer></script>
 </body>
 </html>
