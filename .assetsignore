@@ -1,0 +1,27 @@
+# Workers Builds / Wrangler static-asset upload guard.
+# An explicit wrangler.jsonc above points at ./public, but if a Git build ever
+# falls back to the repository root as the assets directory, these paths must
+# never be uploaded (node_modules/workerd alone is 137 MiB > 25 MiB limit).
+node_modules/
+**/node_modules/
+.git/
+.github/
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+preview/
+dist/
+build/
+coverage/
+*.log
+*.md
+package.json
+package-lock.json
+wrangler.toml
+wrangler.jsonc
+scripts/
+worker/
+lib/
+schema/
